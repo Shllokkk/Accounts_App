@@ -1,0 +1,100 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "GLE.####",
+ "creation": "2026-01-10 18:03:36.725938",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "posting_date",
+  "column_break_ladd",
+  "voucher_type",
+  "voucher_no",
+  "section_break_maje",
+  "account",
+  "column_break_ytlg",
+  "debit",
+  "credit"
+ ],
+ "fields": [
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "voucher_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Voucher Type",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "voucher_no",
+   "fieldtype": "Dynamic Link",
+   "label": "Voucher No",
+   "options": "voucher_type"
+  },
+  {
+   "fieldname": "column_break_ladd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_maje",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account",
+   "link_filters": "[\"Account\", \"is_group\", \"=\", 0]\n",
+   "options": "Account"
+  },
+  {
+   "fieldname": "column_break_ytlg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "debit",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Debit"
+  },
+  {
+   "fieldname": "credit",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Credit"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-11 18:20:30.423788",
+ "modified_by": "Administrator",
+ "module": "Accounts App",
+ "name": "GL Entry",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

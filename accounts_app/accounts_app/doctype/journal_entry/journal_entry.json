@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "JE.####",
+ "creation": "2026-01-09 20:00:14.368247",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_escv",
+  "company",
+  "posting_date",
+  "column_break_ftqc",
+  "total_debit",
+  "total_credit",
+  "difference",
+  "section_break_auuj",
+  "entries",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_escv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ftqc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "difference",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Dr - Cr",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_auuj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "entries",
+   "fieldtype": "Table",
+   "label": "Entries",
+   "options": "Journal Entry Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "total_debit",
+   "fieldtype": "Int",
+   "label": "Total Debit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_credit",
+   "fieldtype": "Int",
+   "label": "Total Credit",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Journal Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-11 13:12:57.720410",
+ "modified_by": "Administrator",
+ "module": "Accounts App",
+ "name": "Journal Entry",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
