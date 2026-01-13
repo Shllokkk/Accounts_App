@@ -33,26 +33,11 @@ def get_columns() -> list[dict]:
 			"width": 300,
 		},
 		{
-			"label": _("Debit"),
-			"fieldname": "debit",
-			"fieldtype": "Int",
-			"width": 200,
-
-		},			
-		{
-			"label": _("Credit"),
-			"fieldname": "credit",
-			"fieldtype": "Int",
-			"width": 200,
-
-		},
-		{
-			"label": _("Balance"),
-			"fieldname": "balance",
-			"fieldtype": "Int",
-			"width": 200,
-
-		},
+			"label": _("Net"),
+			"fieldname" : "net",
+			"fieldtype": "int",
+			"width": 200
+		}
 	]
 
 
@@ -63,34 +48,17 @@ def get_data(filters) -> list[list]:
 	"""
 
 	GLEntry = DocType('GL Entry')
+	Account = DocType('Account')
 
-	query = frappe.qb.from_('GL Entry').select(
-				GLEntry.account,
-				Sum(GLEntry.debit).as_("debit"),
-				Sum(GLEntry.credit).as_("credit"),
-				(Sum(GLEntry.debit) - Sum(GLEntry.credit)).as_("balance")			
+	query = frappe.qb.from_(GLEntry).join(Account).on(
+				GLEntry.account == Account.name
+			).select(
+				(Account.root_type).as_("account"),
+				(Sum(GLEntry.debit) - Sum(GLEntry.credit)).as_("net")		
 			).where(
-				GLEntry.posting_date.between(filters.get("from_date"), filters.get("to_date"))
-			).groupby(GLEntry.account)
-
+				Account.root_type.isin(["Assets", "Liabilities"])
+			).groupby(Account.root_type)
+	
 	data = query.run(as_dict = True)
 
-	total_debit = 0
-	total_credit = 0
-	total_balance = 0
-
-	for row in data:
-		total_debit += row["debit"] or 0
-		total_credit += row["credit"] or 0
-
-	total_balance = total_debit - total_credit
-
-	data.append({
-        "account": "Total",
-        "debit": total_debit,
-        "credit": total_credit,
-        "balance": total_balance,
-		"is_total": 1
-    })
-	
 	return data

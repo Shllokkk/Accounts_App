@@ -9,13 +9,14 @@
   "section_break_escv",
   "company",
   "posting_date",
-  "column_break_ftqc",
-  "total_debit",
-  "total_credit",
-  "difference",
   "section_break_auuj",
   "entries",
-  "amended_from"
+  "amended_from",
+  "section_break_wqae",
+  "total_debit",
+  "total_credit",
+  "column_break_ftqc",
+  "difference"
  ],
  "fields": [
   {
@@ -81,12 +82,16 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "section_break_wqae",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-11 13:12:57.720410",
+ "modified": "2026-01-13 15:40:15.275652",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Journal Entry",

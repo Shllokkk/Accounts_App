@@ -1,22 +1,20 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:company_name",
- "creation": "2026-01-09 15:17:01.791491",
+ "autoname": "field:seller_name",
+ "creation": "2026-01-13 15:41:38.243131",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "company_name",
-  "registration_number",
-  "currency",
-  "symbol",
-  "column_break_bnpq"
+  "seller_name",
+  "registration_number"
  ],
  "fields": [
   {
-   "fieldname": "company_name",
+   "fieldname": "seller_name",
    "fieldtype": "Data",
-   "label": "Company Name",
+   "in_list_view": 1,
+   "label": "Seller Name",
    "reqd": 1,
    "unique": 1
   },
@@ -25,36 +23,17 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Registration Number",
-   "reqd": 1,
-   "unique": 1
-  },
-  {
-   "default": "INR",
-   "fieldname": "currency",
-   "fieldtype": "Data",
-   "label": "Default Currency",
-   "options": "INR\nUSD\nGBP\nYEN",
-   "read_only": 1
-  },
-  {
-   "default": "\u20b9",
-   "fieldname": "symbol",
-   "fieldtype": "Data",
-   "label": "Symbol",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_bnpq",
-   "fieldtype": "Column Break"
+   "non_negative": 1,
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-13 16:06:12.054805",
+ "modified": "2026-01-13 15:43:13.934564",
  "modified_by": "Administrator",
  "module": "Accounts App",
- "name": "Company",
+ "name": "Seller",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [

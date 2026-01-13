@@ -6,13 +6,13 @@ from frappe.model.document import Document
 
 
 class SalesInvoice(Document):
-	def before_save(self):
-		total_amount = 0
+	# def before_save(self):
+	# 	total_amount = 0
 	
-		for row in self.item_list:
-			total_amount += row.amount
+	# 	for row in self.item_list:
+	# 		total_amount += row.amount
 
-		self.total_amount = total_amount
+	# 	self.total_amount = total_amount
 
 	def on_update(self):
 		gl_entry1 = frappe.get_doc({

@@ -37,4 +37,3 @@ class PurchaseInvoice(Document):
 
 		gl_entry1.insert(ignore_permissions = True)
 		gl_entry2.insert(ignore_permissions = True)
-

@@ -7,11 +7,16 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
+  "customer",
   "posting_date",
-  "column_break_zrxk",
-  "total_amount",
   "section_break_afzh",
-  "item_list"
+  "item_list",
+  "section_break_sadj",
+  "column_break_adpa",
+  "debit_to",
+  "credit_from",
+  "column_break_bybu",
+  "total_invoice_amount"
  ],
  "fields": [
   {
@@ -21,17 +26,6 @@
    "label": "Company",
    "options": "Company",
    "reqd": 1
-  },
-  {
-   "fieldname": "column_break_zrxk",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "total_amount",
-   "fieldtype": "Int",
-   "in_list_view": 1,
-   "label": "Total Amount",
-   "read_only": 1
   },
   {
    "fieldname": "section_break_afzh",
@@ -49,12 +43,51 @@
    "fieldtype": "Date",
    "label": "Posting Date",
    "reqd": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Seller",
+   "options": "Seller",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_sadj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_adpa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_bybu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_invoice_amount",
+   "fieldtype": "Currency",
+   "label": "Total Invoice Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "debit_to",
+   "fieldtype": "Link",
+   "label": "Debit To",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "credit_from",
+   "fieldtype": "Link",
+   "label": "Credit From",
+   "options": "Account",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-12 12:50:23.771335",
+ "modified": "2026-01-13 17:54:54.404714",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Purchase Invoice",
