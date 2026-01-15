@@ -98,14 +98,14 @@
    "fieldname": "account_type",
    "fieldtype": "Select",
    "label": "Account Type",
-   "options": "\nCash\nStock\nReceivable\nPayable"
+   "options": "\nCash\nStock\nReceivable\nPayable\nLoan"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-01-14 19:55:51.851351",
+ "modified": "2026-01-15 12:31:26.736003",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Account",

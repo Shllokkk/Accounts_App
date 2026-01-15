@@ -6,14 +6,14 @@ frappe.ui.form.on("Sales Invoice", {
         frm.set_query("credit_from", function() {
             return {
                 filters: {
-                    account_name: "Inventory",
+                    account_type: "Stock",
                 }
             };
         });
         frm.set_query("debit_to", function () {
             return {
                 filters: {
-                    cash: true,
+                    account_type: ["in", ["Cash", "Receivable"]],
                 }
             };
         });
