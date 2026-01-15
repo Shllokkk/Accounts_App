@@ -16,7 +16,8 @@
   "debit_to",
   "credit_from",
   "column_break_bybu",
-  "total_invoice_amount"
+  "total_invoice_amount",
+  "amended_from"
  ],
  "fields": [
   {
@@ -82,12 +83,23 @@
    "label": "Credit From",
    "options": "Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Purchase Invoice",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2026-01-13 17:54:54.404714",
+ "modified": "2026-01-14 00:59:27.273568",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Purchase Invoice",

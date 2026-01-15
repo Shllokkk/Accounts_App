@@ -1,6 +1,25 @@
 // Copyright (c) 2026, Shllok and contributors
 // For license information, please see license.txt
 
+frappe.ui.form.on("Purchase Invoice", {
+    onload(frm) {
+        frm.set_query("debit_to", function () {
+            return {
+                filters: {
+                    account_name: "Inventory",
+                }
+            };
+        });
+        frm.set_query("credit_from", function () {
+            return {
+                filters: {
+                    cash: true,
+                }
+            };
+        });
+    },
+});
+
 frappe.ui.form.on("Invoice Item", {
 	quantity(frm, cdt, cdn) {
         calculate_amount(frm, cdt, cdn);

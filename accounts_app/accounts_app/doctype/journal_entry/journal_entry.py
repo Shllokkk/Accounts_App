@@ -6,7 +6,7 @@ from frappe.model.document import Document
 
 
 class JournalEntry(Document):
-	def before_save(self):
+	def validate(self):
 		debit = 0
 		credit = 0
 
@@ -16,12 +16,13 @@ class JournalEntry(Document):
 
 		if debit - credit != 0:
 			frappe.throw('Debit and Credit Amount must be equal!')
+
 		else:
 			self.total_debit = debit
 			self.total_credit = credit
 			self.difference = debit - credit
 
-	def on_update(self):
+	def on_submit(self):
 		for row in self.entries:
 			gl_entry = frappe.get_doc({
 				"doctype": "GL Entry",
@@ -33,3 +34,8 @@ class JournalEntry(Document):
 				"credit": row.credit,
 			})
 			gl_entry.insert(ignore_permissions = True)
+
+	def on_cancel(self):
+		frappe.db.delete("GL Entry", {
+			"voucher_no": self.name,
+		})

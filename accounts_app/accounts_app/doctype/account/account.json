@@ -12,6 +12,7 @@
   "root_type",
   "type",
   "is_group",
+  "account_type",
   "parent_account",
   "old_parent",
   "column_break_koyz",
@@ -90,15 +91,21 @@
    "fieldname": "root_type",
    "fieldtype": "Select",
    "label": "Root Type",
-   "options": "Assets\nLiabilities\nIncome\nExpenses",
+   "options": "\nAssets\nLiabilities\nIncome\nExpenses",
    "reqd": 1
+  },
+  {
+   "fieldname": "account_type",
+   "fieldtype": "Select",
+   "label": "Account Type",
+   "options": "\nCash\nStock\nReceivable\nPayable"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-01-11 20:14:06.186325",
+ "modified": "2026-01-14 19:55:51.851351",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Account",
