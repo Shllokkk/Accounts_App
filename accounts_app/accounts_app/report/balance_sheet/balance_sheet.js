@@ -3,11 +3,20 @@
 
 frappe.query_reports["Balance Sheet"] = {
 	filters: [
-		// {
-		// 	"fieldname": "my_filter",
-		// 	"label": __("My Filter"),
-		// 	"fieldtype": "Data",
-		// 	"reqd": 1,
-		// },
+		{
+			"fieldname": "company",
+			"label": __("Company"),
+			"fieldtype": "Link",
+			"options": "Company",
+			"reqd": 1,
+		},
+		{
+			"fieldname": "fiscal_year",
+			"label": __("Fiscal Year"),
+			"fieldtype": "Select",
+			"options": "\n2024-2025\n2025-2026",
+			"default": "2025-2026",
+			"reqd": 1,
+		},
 	],
 };

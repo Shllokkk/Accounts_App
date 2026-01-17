@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "company",
   "posting_date",
   "column_break_ladd",
   "voucher_type",
@@ -67,12 +68,18 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Credit"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-13 23:32:52.076628",
+ "modified": "2026-01-17 13:55:34.189546",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "GL Entry",
@@ -80,6 +87,7 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,

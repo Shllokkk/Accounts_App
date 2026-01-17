@@ -5,7 +5,7 @@ import frappe
 from frappe import _
 from frappe.query_builder import DocType
 from frappe.query_builder.functions import Sum
-
+# from erpnext.accounts.utils import get_fiscal_year
 
 def execute(filters: dict | None = None):
 	"""Return columns and data for the report.
@@ -49,16 +49,94 @@ def get_data(filters) -> list[list]:
 
 	GLEntry = DocType('GL Entry')
 	Account = DocType('Account')
-
-	query = frappe.qb.from_(GLEntry).join(Account).on(
-				GLEntry.account == Account.name
-			).select(
-				(Account.root_type).as_("account"),
-				(Sum(GLEntry.debit) - Sum(GLEntry.credit)).as_("net")		
-			).where(
-				Account.root_type.isin(["Assets", "Liabilities"])
-			).groupby(Account.root_type)
+	FiscalYear = DocType('Fiscal Year')
 	
-	data = query.run(as_dict = True)
+	get_dates_query = frappe.qb.from_(FiscalYear).select(
+						FiscalYear.start_date,
+						FiscalYear.end_date
+					).where(FiscalYear.name == filters.get("fiscal_year"))
+	fiscal_year_data = get_dates_query.run(as_dict = True)
 
-	return data
+	start_date = fiscal_year_data[0].get("start_date")
+	end_date = fiscal_year_data[0].get("end_date")
+
+	
+	# fy_start, fy_end = get_fiscal_year(fiscal_year = filters.get("fiscal_year"), as_dict = False)
+
+	# query = frappe.qb.from_(GLEntry).join(Account).on(
+	# 			GLEntry.account == Account.name
+	# 		).select(
+	# 			(Account.root_type).as_("account"),
+	# 			(Sum(GLEntry.debit) - Sum(GLEntry.credit)).as_("net")		
+	# 		).where(
+	# 			Account.root_type.isin(["Assets", "Liabilities"])
+	# 		).groupby(Account.root_type)
+	 
+	get_balance_query = frappe.qb.from_(GLEntry).select(
+							GLEntry.account,
+							Sum(GLEntry.debit).as_("total_debit"),
+							Sum(GLEntry.credit).as_("total_credit")
+						).where(
+							(GLEntry.company == filters.get("company")) &
+							(GLEntry.posting_date.between(start_date, end_date))
+						).groupby(GLEntry.account)
+	
+	balance_data = get_balance_query.run(as_dict = True)
+	
+	net_balances = {}
+	
+	for row in balance_data:
+		net_balances[row.account] = row.total_debit - row.total_credit 
+
+	get_accounts_tree_query = frappe.qb.from_(Account).select(
+								Account.name,
+								Account.parent_account,
+								Account.root_type,
+								Account.is_group
+							).where(
+								(Account.company == filters.get("company")) &
+								(Account.root_type.isin(["Assets", "Liabilities"]))
+							).orderby(Account.lft, Account.rgt)
+	
+	account_tree_data = get_accounts_tree_query.run(as_dict = True)
+
+	parent_account_map = frappe._dict()
+
+	for row in account_tree_data:
+		if row.parent_account not in parent_account_map:
+			parent_account_map.setdefault(row.parent_account, [])
+		parent_account_map.get(row.parent_account).append(row.name)
+	
+	account_map = {}
+
+	for row in account_tree_data:
+		account_map[row.name] = row
+
+	def traversal(parent, indent):
+		final_rows = []
+		total = 0
+
+		for acc_name in parent_account_map.get(parent):
+			account_record = account_map.get(acc_name)
+			balance  = net_balances.get(acc_name, 0)
+
+			if account_record.is_group == 1:
+				child_rows, balance = traversal(acc_name, indent + 1)
+
+			final_rows.append({
+				"account": acc_name,
+				"net": balance,
+				"indent" : indent,
+				"is_group": account_record.is_group,
+				"root_type": account_record.root_type,
+			})
+
+			if account_record.is_group == 1:
+				final_rows.extend(child_rows)
+
+			total += balance
+		return final_rows, total
+	
+	final_data, final_total = traversal(None, 0)
+ 
+	return final_data
