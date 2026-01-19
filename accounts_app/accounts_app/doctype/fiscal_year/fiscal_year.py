@@ -12,7 +12,7 @@ class FiscalYear(Document):
 		name_str = re.match(r"^(\d{4})-(\d{4})$", self.name)
 
 		if not name_str:
-			frappe.throw("Fiscal Yrear name must be in the format YYYY-YYYY")
+			frappe.throw("Fiscal Year name must be in the format YYYY-YYYY")
 		
 		# start_year = int(name_str.group(1))
 		# end_year = int(name_str.group(2))

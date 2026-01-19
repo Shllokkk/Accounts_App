@@ -35,7 +35,7 @@ def get_columns() -> list[dict]:
 		{
 			"label": _("Net"),
 			"fieldname" : "net",
-			"fieldtype": "int",
+			"fieldtype": "Currency",
 			"width": 200
 		}
 	]
@@ -59,18 +59,7 @@ def get_data(filters) -> list[list]:
 
 	start_date = fiscal_year_data[0].get("start_date")
 	end_date = fiscal_year_data[0].get("end_date")
-
-	
 	# fy_start, fy_end = get_fiscal_year(fiscal_year = filters.get("fiscal_year"), as_dict = False)
-
-	# query = frappe.qb.from_(GLEntry).join(Account).on(
-	# 			GLEntry.account == Account.name
-	# 		).select(
-	# 			(Account.root_type).as_("account"),
-	# 			(Sum(GLEntry.debit) - Sum(GLEntry.credit)).as_("net")		
-	# 		).where(
-	# 			Account.root_type.isin(["Assets", "Liabilities"])
-	# 		).groupby(Account.root_type)
 	 
 	get_balance_query = frappe.qb.from_(GLEntry).select(
 							GLEntry.account,
@@ -86,7 +75,9 @@ def get_data(filters) -> list[list]:
 	net_balances = {}
 	
 	for row in balance_data:
-		net_balances[row.account] = row.total_debit - row.total_credit 
+		net_balances[row.account] = row.total_debit - row.total_credit
+		if net_balances[row.account] < 0:
+			net_balances[row.account] = abs(net_balances[row.account])
 
 	get_accounts_tree_query = frappe.qb.from_(Account).select(
 								Account.name,
@@ -135,6 +126,7 @@ def get_data(filters) -> list[list]:
 				final_rows.extend(child_rows)
 
 			total += balance
+		
 		return final_rows, total
 	
 	final_data, final_total = traversal(None, 0)

@@ -6,6 +6,4 @@ from frappe.utils.nestedset import NestedSet
 
 
 class Account(NestedSet):
-	def validate(self):
-		if self.is_group and self.cash:
-			frappe.throw("Cash account can be set for Leaf accounts only!")
+	pass

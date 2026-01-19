@@ -2,6 +2,7 @@
 // For license information, please see license.txt
 
 frappe.query_reports["Trial Balance"] = {
+
 	formatter: function (value, row, column, data, default_formatter) {
 		value = default_formatter(value, row, column, data);
 		if (data && data.is_total) {

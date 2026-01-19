@@ -1,7 +1,7 @@
 # Copyright (c) 2026, Shllok and Contributors
 # See license.txt
 
-# import frappe
+import frappe
 from frappe.tests import IntegrationTestCase
 
 
@@ -19,4 +19,43 @@ class IntegrationTestFiscalYear(IntegrationTestCase):
 	Use this class for testing interactions between multiple components.
 	"""
 
-	pass
+	def test_invalid_name_without_hyphen(self):
+		doc = frappe.get_doc({
+			"doctype": "Fiscal Year",
+			"fy_name": "20242025",
+			"start_date": "2024-01-23",
+			"end_date": "2025-01-22",
+		})
+
+		self.assertRaises(frappe.ValidationError, doc.insert)
+
+	def test_invalid_name_with_letters(self):
+		doc = frappe.get_doc({
+			"doctype": "Fiscal Year",
+			"fy_name": "abcd-2025",
+			"start_date": "2024-01-23",
+			"end_date": "2025-01-22",
+		})
+
+		self.assertRaises(frappe.ValidationError, doc.insert)
+
+	def test_invalid_name_without_hyphen(self):
+		doc = frappe.get_doc({
+			"doctype": "Fiscal Year",
+			"fy_name": "20242025",
+			"start_date": "2024-01-23",
+			"end_date": "2025-01-22",
+		})
+
+		self.assertRaises(frappe.ValidationError, doc.insert)
+
+	def test_invalid_name_without_hyphen(self):
+		doc = frappe.get_doc({
+			"doctype": "Fiscal Year",
+			"fy_name": "20242025",
+			"start_date": "2024-01-23",
+			"end_date": "2025-01-22",
+		})
+
+		self.assertRaises(frappe.ValidationError, doc.insert)
+
