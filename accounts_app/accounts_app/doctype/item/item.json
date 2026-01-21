@@ -7,21 +7,11 @@
  "engine": "InnoDB",
  "field_order": [
   "item_name",
-  "hsn",
   "column_break_rbhu",
   "rate",
   "quantity"
  ],
  "fields": [
-  {
-   "fieldname": "hsn",
-   "fieldtype": "Int",
-   "in_list_view": 1,
-   "label": "HSN",
-   "non_negative": 1,
-   "reqd": 1,
-   "unique": 1
-  },
   {
    "fieldname": "item_name",
    "fieldtype": "Data",
@@ -31,15 +21,17 @@
   },
   {
    "fieldname": "rate",
-   "fieldtype": "Int",
+   "fieldtype": "Currency",
    "label": "Rate",
-   "non_negative": 1
+   "non_negative": 1,
+   "reqd": 1
   },
   {
    "fieldname": "quantity",
    "fieldtype": "Int",
    "label": "Quantity",
-   "non_negative": 1
+   "non_negative": 1,
+   "reqd": 1
   },
   {
    "fieldname": "column_break_rbhu",
@@ -49,7 +41,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-14 11:22:45.379543",
+ "modified": "2026-01-20 16:48:09.602408",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Item",

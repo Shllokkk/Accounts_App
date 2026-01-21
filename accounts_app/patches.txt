@@ -5,3 +5,4 @@
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
 accounts_app.accounts_app.doctype.account.patches.cash_to_account_type
+accounts_app.accounts_app.doctype.item.patches.hsn_column_constraints

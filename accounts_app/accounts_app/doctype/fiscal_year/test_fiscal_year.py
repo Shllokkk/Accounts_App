@@ -23,8 +23,6 @@ class IntegrationTestFiscalYear(IntegrationTestCase):
 		doc = frappe.get_doc({
 			"doctype": "Fiscal Year",
 			"fy_name": "20242025",
-			"start_date": "2024-01-23",
-			"end_date": "2025-01-22",
 		})
 
 		self.assertRaises(frappe.ValidationError, doc.insert)
@@ -33,29 +31,35 @@ class IntegrationTestFiscalYear(IntegrationTestCase):
 		doc = frappe.get_doc({
 			"doctype": "Fiscal Year",
 			"fy_name": "abcd-2025",
-			"start_date": "2024-01-23",
-			"end_date": "2025-01-22",
 		})
 
 		self.assertRaises(frappe.ValidationError, doc.insert)
 
-	def test_invalid_name_without_hyphen(self):
+	def test_invalid_name_with_wrong_format(self):
 		doc = frappe.get_doc({
 			"doctype": "Fiscal Year",
-			"fy_name": "20242025",
-			"start_date": "2024-01-23",
-			"end_date": "2025-01-22",
+			"fy_name": "24-25",
 		})
 
 		self.assertRaises(frappe.ValidationError, doc.insert)
 
-	def test_invalid_name_without_hyphen(self):
+	def test_same_year_on_both_sides(self):
 		doc = frappe.get_doc({
 			"doctype": "Fiscal Year",
-			"fy_name": "20242025",
-			"start_date": "2024-01-23",
-			"end_date": "2025-01-22",
+			"fy_name": "2024-2024",
 		})
 
 		self.assertRaises(frappe.ValidationError, doc.insert)
 
+	def test_start_end_dates_validation(self):
+		doc = frappe.get_doc({
+			"doctype": "Fiscal Year",
+			"fy_name": "2029-2030"
+		})
+
+		doc.insert()
+
+		test_doc = frappe.get_doc("Fiscal Year", doc.name)
+
+		self.assertEqual("2029-04-01", str(test_doc.start_date))
+		self.assertEqual("2030-03-31", str(test_doc.end_date))

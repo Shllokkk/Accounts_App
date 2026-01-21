@@ -7,7 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
-  "customer",
+  "seller",
   "posting_date",
   "section_break_afzh",
   "item_list",
@@ -43,13 +43,6 @@
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Posting Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "label": "Seller",
-   "options": "Seller",
    "reqd": 1
   },
   {
@@ -93,13 +86,20 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "seller",
+   "fieldtype": "Link",
+   "label": "Seller",
+   "options": "Seller",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-14 00:59:27.273568",
+ "modified": "2026-01-21 12:10:54.825617",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Purchase Invoice",

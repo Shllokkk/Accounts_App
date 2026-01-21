@@ -44,7 +44,7 @@
   },
   {
    "fieldname": "difference",
-   "fieldtype": "Int",
+   "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Dr - Cr",
    "read_only": 1
@@ -62,13 +62,13 @@
   },
   {
    "fieldname": "total_debit",
-   "fieldtype": "Int",
+   "fieldtype": "Currency",
    "label": "Total Debit",
    "read_only": 1
   },
   {
    "fieldname": "total_credit",
-   "fieldtype": "Int",
+   "fieldtype": "Currency",
    "label": "Total Credit",
    "read_only": 1
   },
@@ -92,7 +92,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-14 00:05:12.056697",
+ "modified": "2026-01-20 17:40:37.112418",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Journal Entry",

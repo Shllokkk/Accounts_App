@@ -25,20 +25,20 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Start Date",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "end_date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "End Date",
-   "reqd": 1
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-17 15:10:49.825697",
+ "modified": "2026-01-19 19:36:20.045476",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Fiscal Year",

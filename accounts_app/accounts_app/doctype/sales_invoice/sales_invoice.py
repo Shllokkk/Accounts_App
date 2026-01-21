@@ -6,19 +6,41 @@ from frappe.model.document import Document
 
 
 class SalesInvoice(Document):
-	# def before_save(self):
-	# 	total_invoice_amount = 0
-	
-	# 	for row in self.item_list:
-	# 		total_invoice_amount += row.amount
-
-	# 	self.total_invoice_amount = total_invoice_amount
+	def validate(self):
+		self.validate_amount_and_total_amount()
+		self.validate_debit_to_account()
+		self.validate_credit_from_account()
 
 	def on_submit(self):
+		self.create_gl_entries()
 
-		if(self.debit_to == "Accounts Payable"):
-			frappe.throw("Cannot debit to Accounts Payable!")
+	def on_cancel(self):
+		frappe.db.delete("GL Entry", {
+			"voucher_no": self.name,
+		})
+	
+	def validate_amount_and_total_amount(self):
+		total_invoice_amount = 0
+	
+		for row in self.item_list:
+			row.amount = row.quantity * row.rate
+			total_invoice_amount += row.amount
 
+		self.total_invoice_amount = total_invoice_amount
+
+	def validate_debit_to_account(self):
+		account = frappe.get_doc("Account", self.debit_to)
+
+		if(account.account_type not in ["Cash", "Receivable"]):
+			frappe.throw("Debit To account must be of the type Cash or Receivable")
+
+	def validate_credit_from_account(self):
+		account = frappe.get_doc("Account", self.credit_from)
+
+		if(account.account_type != "Stock"):
+			frappe.throw("Debit To account must be of the type Stock")
+
+	def create_gl_entries(self):
 		gl_entry1 = frappe.get_doc({
 			"doctype": "GL Entry",
 			"posting_date": self.posting_date,
@@ -37,8 +59,8 @@ class SalesInvoice(Document):
 			"debit": self.total_invoice_amount,
 			"credit": 0,
 		})
-		gl_entry1.insert(ignore_permissions = True)
-		gl_entry2.insert(ignore_permissions = True)
+		gl_entry1.insert()
+		gl_entry2.insert()
 
 		gl_entry3 = frappe.get_doc({
 			"doctype": "GL Entry",
@@ -58,10 +80,5 @@ class SalesInvoice(Document):
 			"debit": self.total_invoice_amount,
 			"credit": 0,
 		})
-		gl_entry3.insert(ignore_permissions = True)
-		gl_entry4.insert(ignore_permissions = True)
-
-	def on_cancel(self):
-		frappe.db.delete("GL Entry", {
-			"voucher_no": self.name,
-		})
+		gl_entry3.insert()
+		gl_entry4.insert()

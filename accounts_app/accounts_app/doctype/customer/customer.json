@@ -1,13 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:customer_name",
+ "autoname": "CUST.####",
  "creation": "2026-01-13 15:21:31.491752",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "customer_name",
-  "registration_no"
+  "customer_name"
  ],
  "fields": [
   {
@@ -17,23 +16,16 @@
    "label": "Customer Name",
    "reqd": 1,
    "unique": 1
-  },
-  {
-   "fieldname": "registration_no",
-   "fieldtype": "Data",
-   "label": "Registration No",
-   "non_negative": 1,
-   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-13 15:43:29.509070",
+ "modified": "2026-01-20 15:38:39.482205",
  "modified_by": "Administrator",
  "module": "Accounts App",
  "name": "Customer",
- "naming_rule": "By fieldname",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -53,5 +45,6 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "customer_name"
 }

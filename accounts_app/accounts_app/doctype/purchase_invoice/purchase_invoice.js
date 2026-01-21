@@ -32,7 +32,7 @@ frappe.ui.form.on("Invoice Item", {
 function calculate_amount(frm, cdt, cdn) {
     let row = locals[cdt][cdn];
     row.amount = row.quantity * row.rate;
-    refresh_field['item_list'];
+    refresh_field('item_list');
     calculate_total(frm);
 }
 
