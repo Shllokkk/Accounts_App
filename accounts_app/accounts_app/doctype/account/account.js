@@ -7,8 +7,26 @@ frappe.ui.form.on("Account", {
 
         if(type == "Assets" || type == "Expenses")
             frm.set_value('type', 'Debit');
-        else
+        else if(type == "Liabilities" || type == "Income")
             frm.set_value('type', 'Credit');
+        else
+            frm.set_value('type', '')
+
+        frm.set_query('parent_account', function() {
+            if(type =="")
+                return {
+                    filters: {
+                        is_group: 1
+                    }
+                }
+            else 
+                return {
+                    filters: {
+                        root_type: type,
+                        is_group: 1
+                    }
+                }
+        })
     },
     is_group(frm) {
         if(frm.doc.is_group)
