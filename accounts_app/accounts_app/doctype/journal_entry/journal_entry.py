@@ -18,8 +18,8 @@ class JournalEntry(Document):
 		self.create_gl_entries()
 
 	def on_cancel(self):
-		self.create_reverse_entries()
-		self.cancel_original_entries()
+		self.create_reverse_gl_entries()
+		self.cancel_original_gl_entries()
 
 	def validate_number_of_entries(self):
 		if len(self.entries) < 2:
@@ -60,7 +60,7 @@ class JournalEntry(Document):
 			})
 			gl_entry.insert()
 
-	def create_reverse_entries(self):
+	def create_reverse_gl_entries(self):
 		for row in self.entries:
 			rev_gl_entry = frappe.new_doc("GL Entry")
 			rev_gl_entry.company = "SG Dies"
@@ -74,7 +74,7 @@ class JournalEntry(Document):
 
 			rev_gl_entry.insert()
 
-	def cancel_original_entries(self):
+	def cancel_original_gl_entries(self):
 		gl_entries = frappe.db.get_all("GL Entry",filters = {"voucher_no": self.name})
 
 		for g in gl_entries:

@@ -37,7 +37,7 @@ def get_columns() -> list[dict]:
 			"fieldname" : "net",
 			"fieldtype": "Currency",
 			"width": 200
-		}
+		},
 	]
 
 
@@ -47,8 +47,29 @@ def get_data(filters) -> list[list]:
 	The report data is a list of rows, with each row being a list of cell values.
 	"""
 
-	GLEntry = DocType('GL Entry')
-	Account = DocType('Account')
+	start_date, end_date = get_fiscal_year(filters)
+
+	net_balances = get_net_balance_data(filters, start_date, end_date)
+
+	account_tree_data = get_accounts_tree_data(filters)
+
+	parent_account_map = frappe._dict()
+
+	for row in account_tree_data:
+		if row.parent_account not in parent_account_map:
+			parent_account_map.setdefault(row.parent_account, [])
+		parent_account_map.get(row.parent_account).append(row.name)
+
+	account_map = {}
+
+	for row in account_tree_data:
+		account_map[row.name] = row
+
+	final_data, _ = traversal(None, 0, parent_account_map, account_map, net_balances)
+ 
+	return final_data
+
+def get_fiscal_year(filters):
 	FiscalYear = DocType('Fiscal Year')
 	
 	get_dates_query = frappe.qb.from_(FiscalYear).select(
@@ -59,8 +80,12 @@ def get_data(filters) -> list[list]:
 
 	start_date = fiscal_year_data[0].get("start_date")
 	end_date = fiscal_year_data[0].get("end_date")
-	# fy_start, fy_end = get_fiscal_year(fiscal_year = filters.get("fiscal_year"), as_dict = False)
-	 
+
+	return start_date, end_date
+
+def get_net_balance_data(filters, start_date, end_date):
+	GLEntry = DocType('GL Entry')
+
 	get_balance_query = frappe.qb.from_(GLEntry).select(
 							GLEntry.account,
 							Sum(GLEntry.debit).as_("total_debit"),
@@ -79,6 +104,11 @@ def get_data(filters) -> list[list]:
 		if net_balances[row.account] < 0:
 			net_balances[row.account] = abs(net_balances[row.account])
 
+	return net_balances
+
+def get_accounts_tree_data(filters):
+	Account = DocType('Account')
+	
 	get_accounts_tree_query = frappe.qb.from_(Account).select(
 								Account.name,
 								Account.parent_account,
@@ -91,44 +121,30 @@ def get_data(filters) -> list[list]:
 	
 	account_tree_data = get_accounts_tree_query.run(as_dict = True)
 
-	parent_account_map = frappe._dict()
+	return account_tree_data
 
-	for row in account_tree_data:
-		if row.parent_account not in parent_account_map:
-			parent_account_map.setdefault(row.parent_account, [])
-		parent_account_map.get(row.parent_account).append(row.name)
+def traversal(parent, indent, parent_account_map, account_map, net_balances):
+	final_rows = []
+	total = 0
+
+	for acc_name in parent_account_map.get(parent, []):
+		account_record = account_map.get(acc_name)
+		balance  = net_balances.get(acc_name, 0)
+
+		if account_record.is_group == 1:
+			child_rows, balance = traversal(acc_name, indent + 1, parent_account_map, account_map, net_balances)
+
+		final_rows.append({
+			"account": acc_name,
+			"net": balance,
+			"indent" : indent,
+			"is_group": account_record.is_group,
+			"root_type": account_record.root_type,
+		})
+
+		if account_record.is_group == 1:
+			final_rows.extend(child_rows)
+
+		total += balance
 	
-	account_map = {}
-
-	for row in account_tree_data:
-		account_map[row.name] = row
-
-	def traversal(parent, indent):
-		final_rows = []
-		total = 0
-
-		for acc_name in parent_account_map.get(parent):
-			account_record = account_map.get(acc_name)
-			balance  = net_balances.get(acc_name, 0)
-
-			if account_record.is_group == 1:
-				child_rows, balance = traversal(acc_name, indent + 1)
-
-			final_rows.append({
-				"account": acc_name,
-				"net": balance,
-				"indent" : indent,
-				"is_group": account_record.is_group,
-				"root_type": account_record.root_type,
-			})
-
-			if account_record.is_group == 1:
-				final_rows.extend(child_rows)
-
-			total += balance
-		
-		return final_rows, total
-	
-	final_data, final_total = traversal(None, 0)
- 
-	return final_data
+	return final_rows, total

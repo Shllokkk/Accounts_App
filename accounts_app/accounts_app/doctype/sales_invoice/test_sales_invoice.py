@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.tests import IntegrationTestCase
+from frappe.utils import today
 
 
 # On IntegrationTestCase, the doctype test records and all
@@ -89,3 +90,33 @@ class IntegrationTestSalesInvoice(IntegrationTestCase):
 
 		self.assertEqual(len(gl_entries), 4)
 
+	def test_gl_entry_reversal_on_cancel(self):
+		doc = frappe.new_doc("Sales Invoice")
+		doc.company = "SG Dies"
+		doc.customer = "CUST0001"
+		doc.posting_date = "2026-01-17"
+		doc.debit_to = "Accounts Receivable"
+		doc.credit_from = "Inventory"
+
+		doc.append("item_list", {
+			"item_name": "ITM0001",
+			"quantity": 10,
+			"rate": 10,
+		})
+
+		doc.insert()
+		doc.submit()
+		doc.cancel()
+
+		gl_entries = frappe.db.get_all("GL Entry", filters = {"voucher_no": doc.name, "posting_date": doc.posting_date}, fields = ["name", "account", "debit", "credit"])
+		rev_gl_entries = frappe.db.get_all("GL Entry", filters = {"voucher_no": doc.name, "posting_date": today()}, fields = ["name", "account", "debit", "credit"])
+
+		self.assertEqual(len(rev_gl_entries), len(gl_entries))
+
+		iter = 0
+
+		while iter < len(gl_entries):
+			self.assertEqual(gl_entries[iter].account, rev_gl_entries[iter].account)
+			self.assertEqual(gl_entries[iter].debit, rev_gl_entries[iter].credit)
+			self.assertEqual(gl_entries[iter].credit, rev_gl_entries[iter].debit)
+			iter += 1

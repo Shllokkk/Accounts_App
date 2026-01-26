@@ -13,9 +13,8 @@ frappe.query_reports["Balance Sheet"] = {
 		{
 			"fieldname": "fiscal_year",
 			"label": __("Fiscal Year"),
-			"fieldtype": "Select",
-			"options": "\n2024-2025\n2025-2026",
-			"default": "2025-2026",
+			"fieldtype": "Link",
+			"options": "Fiscal Year",
 			"reqd": 1,
 		},
 	],

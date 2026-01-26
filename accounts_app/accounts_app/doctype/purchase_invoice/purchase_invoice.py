@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+from frappe.utils import today
 
 
 class PurchaseInvoice(Document):
@@ -15,9 +16,8 @@ class PurchaseInvoice(Document):
 		self.create_gl_entries()
 		
 	def on_cancel(self):
-		frappe.db.delete("GL Entry", {
-			"voucher_no": self.name,
-		})
+		self.create_reverse_gl_entries()
+		self.cancel_original_gl_entries()
 
 	def calculate_amt_and_total_amt(self):
 		total_invoice_amount = 0
@@ -63,3 +63,37 @@ class PurchaseInvoice(Document):
 
 		gl_entry1.insert()
 		gl_entry2.insert()
+
+	def create_reverse_gl_entries(self):
+		gl_entry1 = frappe.get_doc({
+			"doctype": "GL Entry",
+			"posting_date": today(),
+			"voucher_type": self.doctype,
+			"voucher_no": self.name,
+			"account": self.credit_from,
+			"debit": self.total_invoice_amount,
+			"credit": 0,
+			"is_cancelled": 1
+		})
+
+		gl_entry2 = frappe.get_doc({
+			"doctype": "GL Entry",
+			"posting_date": today(),
+			"voucher_type": self.doctype,
+			"voucher_no": self.name,
+			"account": self.debit_to,
+			"debit": 0,
+			"credit": self.total_invoice_amount,
+			"is_cancelled": 1
+		})
+
+		gl_entry1.insert()
+		gl_entry2.insert()
+
+	def cancel_original_gl_entries(self):
+		gl_entries = frappe.db.get_all("GL Entry",filters = {"voucher_no": self.name})
+
+		for g in gl_entries:
+			gl_entry = frappe.get_doc("GL Entry", g.name)
+			gl_entry.is_cancelled = 1
+			gl_entry.save()
