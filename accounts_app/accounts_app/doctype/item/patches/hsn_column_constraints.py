@@ -1,5 +1,6 @@
 import frappe
 
+
 def execute():
 	"""alters the hsn column constraints"""
 

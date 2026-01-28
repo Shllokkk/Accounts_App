@@ -1,13 +1,14 @@
 # Copyright (c) 2026, Shllok and contributors
 # For license information, please see license.txt
 
-import frappe
 import re
+
+import frappe
 from frappe.model.document import Document
 
-class FiscalYear(Document):
 
-	def validate(self): 
+class FiscalYear(Document):
+	def validate(self):
 		start_year, end_year = self.validate_fy_name()
 
 		self.start_date = f"{start_year}/04/01"

@@ -30,6 +30,7 @@ class Account(NestedSet):
 		if not parent.is_group:
 			frappe.throw("Parent Account must be a group account")
 
+
 @frappe.whitelist()
 def get_children(doctype, parent=None, company=None):
 	filters = {}

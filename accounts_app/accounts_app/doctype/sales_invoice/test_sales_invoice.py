@@ -5,13 +5,11 @@ import frappe
 from frappe.tests import IntegrationTestCase
 from frappe.utils import today
 
-
 # On IntegrationTestCase, the doctype test records and all
 # link-field test record dependencies are recursively loaded
 # Use these module variables to add/remove to/from that list
 EXTRA_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
 IGNORE_TEST_RECORD_DEPENDENCIES = []  # eg. ["User"]
-
 
 
 class IntegrationTestSalesInvoice(IntegrationTestCase):
@@ -28,11 +26,14 @@ class IntegrationTestSalesInvoice(IntegrationTestCase):
 		doc.debit_to = "Accounts Receivable"
 		doc.credit_from = "Inventory"
 
-		doc.append("item_list", {
-			"item_name": "ITM0001",
-			"quantity": 10,
-			"rate": 10,
-		})
+		doc.append(
+			"item_list",
+			{
+				"item_name": "ITM0001",
+				"quantity": 10,
+				"rate": 10,
+			},
+		)
 
 		doc.insert()
 
@@ -77,16 +78,19 @@ class IntegrationTestSalesInvoice(IntegrationTestCase):
 		doc.debit_to = "Accounts Receivable"
 		doc.credit_from = "Inventory"
 
-		doc.append("item_list", {
-			"item_name": "ITM0001",
-			"quantity": 10,
-			"rate": 10,
-		})
+		doc.append(
+			"item_list",
+			{
+				"item_name": "ITM0001",
+				"quantity": 10,
+				"rate": 10,
+			},
+		)
 
 		doc.insert()
 		doc.submit()
 
-		gl_entries = frappe.db.get_all("GL Entry", filters = {"voucher_no": doc.name})
+		gl_entries = frappe.db.get_all("GL Entry", filters={"voucher_no": doc.name})
 
 		self.assertEqual(len(gl_entries), 4)
 
@@ -98,18 +102,29 @@ class IntegrationTestSalesInvoice(IntegrationTestCase):
 		doc.debit_to = "Accounts Receivable"
 		doc.credit_from = "Inventory"
 
-		doc.append("item_list", {
-			"item_name": "ITM0001",
-			"quantity": 10,
-			"rate": 10,
-		})
+		doc.append(
+			"item_list",
+			{
+				"item_name": "ITM0001",
+				"quantity": 10,
+				"rate": 10,
+			},
+		)
 
 		doc.insert()
 		doc.submit()
 		doc.cancel()
 
-		gl_entries = frappe.db.get_all("GL Entry", filters = {"voucher_no": doc.name, "posting_date": doc.posting_date}, fields = ["name", "account", "debit", "credit"])
-		rev_gl_entries = frappe.db.get_all("GL Entry", filters = {"voucher_no": doc.name, "posting_date": today()}, fields = ["name", "account", "debit", "credit"])
+		gl_entries = frappe.db.get_all(
+			"GL Entry",
+			filters={"voucher_no": doc.name, "posting_date": doc.posting_date},
+			fields=["name", "account", "debit", "credit"],
+		)
+		rev_gl_entries = frappe.db.get_all(
+			"GL Entry",
+			filters={"voucher_no": doc.name, "posting_date": today()},
+			fields=["name", "account", "debit", "credit"],
+		)
 
 		self.assertEqual(len(rev_gl_entries), len(gl_entries))
 

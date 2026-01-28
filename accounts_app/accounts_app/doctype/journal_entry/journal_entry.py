@@ -13,7 +13,7 @@ class JournalEntry(Document):
 		self.validate_debit_credit_accounts()
 
 		self.validate_debit_credit_amount()
-		
+
 	def on_submit(self):
 		self.create_gl_entries()
 
@@ -27,7 +27,7 @@ class JournalEntry(Document):
 
 	def validate_debit_credit_accounts(self):
 		for row in self.entries:
-			if row.debit !=0 and row.credit != 0:
+			if row.debit != 0 and row.credit != 0:
 				frappe.throw("An account cannot be both debited and credited in the same entry")
 
 	def validate_debit_credit_amount(self):
@@ -39,7 +39,7 @@ class JournalEntry(Document):
 			credit += row.credit
 
 		if debit - credit != 0:
-			frappe.throw('Debit and Credit Amount must be equal!')
+			frappe.throw("Debit and Credit Amount must be equal!")
 
 		else:
 			self.total_debit = debit
@@ -48,16 +48,18 @@ class JournalEntry(Document):
 
 	def create_gl_entries(self):
 		for row in self.entries:
-			gl_entry = frappe.get_doc({
-				"doctype": "GL Entry",
-				"company": "SG Dies",
-				"posting_date": self.posting_date,
-				"voucher_type": self.doctype,
-				"voucher_no": self.name,
-				"account": row.account,
-				"debit": row.debit,
-				"credit": row.credit,
-			})
+			gl_entry = frappe.get_doc(
+				{
+					"doctype": "GL Entry",
+					"company": "SG Dies",
+					"posting_date": self.posting_date,
+					"voucher_type": self.doctype,
+					"voucher_no": self.name,
+					"account": row.account,
+					"debit": row.debit,
+					"credit": row.credit,
+				}
+			)
 			gl_entry.insert()
 
 	def create_reverse_gl_entries(self):
@@ -75,7 +77,7 @@ class JournalEntry(Document):
 			rev_gl_entry.insert()
 
 	def cancel_original_gl_entries(self):
-		gl_entries = frappe.db.get_all("GL Entry",filters = {"voucher_no": self.name})
+		gl_entries = frappe.db.get_all("GL Entry", filters={"voucher_no": self.name})
 
 		for g in gl_entries:
 			gl_entry = frappe.get_doc("GL Entry", g.name)

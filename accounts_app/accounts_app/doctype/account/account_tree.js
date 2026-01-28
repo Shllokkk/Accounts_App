@@ -3,7 +3,7 @@ frappe.provide("frappe.treeview_settings");
 frappe.treeview_settings["Account"] = {
 	breadcrumb: "Account",
 	get_tree_root: false,
-    get_tree_nodes: "accounts_app.accounts_app.doctype.account.account.get_children",
+	get_tree_nodes: "accounts_app.accounts_app.doctype.account.account.get_children",
 
 	filters: [
 		{
@@ -21,9 +21,9 @@ frappe.treeview_settings["Account"] = {
 					frappe.throw("Please select a Company!");
 				}
 
-                tree_obj.args = tree_obj.args || {};
+				tree_obj.args = tree_obj.args || {};
 				tree_obj.args.company = company;
-                tree_obj.root_node = null;
+				tree_obj.root_node = null;
 
 				tree_obj.refresh();
 			},

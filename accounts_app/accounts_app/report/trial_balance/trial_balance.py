@@ -37,21 +37,18 @@ def get_columns() -> list[dict]:
 			"fieldname": "debit",
 			"fieldtype": "Int",
 			"width": 200,
-
-		},			
+		},
 		{
 			"label": _("Credit"),
 			"fieldname": "credit",
 			"fieldtype": "Int",
 			"width": 200,
-
 		},
 		{
 			"label": _("Balance"),
 			"fieldname": "balance",
 			"fieldtype": "Int",
 			"width": 200,
-
 		},
 	]
 
@@ -62,18 +59,21 @@ def get_data(filters) -> list[list]:
 	The report data is a list of rows, with each row being a list of cell values.
 	"""
 
-	GLEntry = DocType('GL Entry')
+	GLEntry = DocType("GL Entry")
 
-	query = frappe.qb.from_('GL Entry').select(
-				GLEntry.account,
-				Sum(GLEntry.debit).as_("debit"),
-				Sum(GLEntry.credit).as_("credit"),
-				(Sum(GLEntry.debit) - Sum(GLEntry.credit)).as_("balance")			
-			).where(
-				GLEntry.posting_date.between(filters.get("from_date"), filters.get("to_date"))
-			).groupby(GLEntry.account)
+	query = (
+		frappe.qb.from_("GL Entry")
+		.select(
+			GLEntry.account,
+			Sum(GLEntry.debit).as_("debit"),
+			Sum(GLEntry.credit).as_("credit"),
+			(Sum(GLEntry.debit) - Sum(GLEntry.credit)).as_("balance"),
+		)
+		.where(GLEntry.posting_date.between(filters.get("from_date"), filters.get("to_date")))
+		.groupby(GLEntry.account)
+	)
 
-	data = query.run(as_dict = True)
+	data = query.run(as_dict=True)
 
 	total_debit = 0
 	total_credit = 0
@@ -85,12 +85,14 @@ def get_data(filters) -> list[list]:
 
 	total_balance = total_debit - total_credit
 
-	data.append({
-        "account": "Total",
-        "debit": total_debit,
-        "credit": total_credit,
-        "balance": total_balance,
-		"is_total": 1
-    })
-	
+	data.append(
+		{
+			"account": "Total",
+			"debit": total_debit,
+			"credit": total_credit,
+			"balance": total_balance,
+			"is_total": 1,
+		}
+	)
+
 	return data

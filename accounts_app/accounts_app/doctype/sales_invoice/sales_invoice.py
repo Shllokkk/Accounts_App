@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import today
 
+
 class SalesInvoice(Document):
 	def validate(self):
 		self.validate_amount_and_total_amount()
@@ -20,7 +21,7 @@ class SalesInvoice(Document):
 
 	def validate_amount_and_total_amount(self):
 		total_invoice_amount = 0
-	
+
 		for row in self.item_list:
 			row.amount = row.quantity * row.rate
 			total_invoice_amount += row.amount
@@ -30,108 +31,123 @@ class SalesInvoice(Document):
 	def validate_debit_to_account(self):
 		account = frappe.get_doc("Account", self.debit_to)
 
-		if(account.account_type not in ["Cash", "Receivable"]):
+		if account.account_type not in ["Cash", "Receivable"]:
 			frappe.throw("Debit To account must be of the type Cash or Receivable")
 
 	def validate_credit_from_account(self):
 		account = frappe.get_doc("Account", self.credit_from)
 
-		if(account.account_type != "Stock"):
+		if account.account_type != "Stock":
 			frappe.throw("Debit To account must be of the type Stock")
 
 	def create_gl_entries(self):
-		gl_entry1 = frappe.get_doc({
-			"doctype": "GL Entry",
-			"posting_date": self.posting_date,
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"account": self.credit_from,
-			"debit": 0,
-			"credit": self.total_invoice_amount,
-		})
-		gl_entry2 = frappe.get_doc({
-			"doctype": "GL Entry",
-			"posting_date": self.posting_date,
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"account": "Cost of Goods Sold",
-			"debit": self.total_invoice_amount,
-			"credit": 0,
-		})
+		gl_entry1 = frappe.get_doc(
+			{
+				"doctype": "GL Entry",
+				"posting_date": self.posting_date,
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+				"account": self.credit_from,
+				"debit": 0,
+				"credit": self.total_invoice_amount,
+			}
+		)
+		gl_entry2 = frappe.get_doc(
+			{
+				"doctype": "GL Entry",
+				"posting_date": self.posting_date,
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+				"account": "Cost of Goods Sold",
+				"debit": self.total_invoice_amount,
+				"credit": 0,
+			}
+		)
 		gl_entry1.insert()
 		gl_entry2.insert()
 
-		gl_entry3 = frappe.get_doc({
-			"doctype": "GL Entry",
-			"posting_date": self.posting_date,
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"account": "Proceeds from Sales ",
-			"debit": 0,
-			"credit": self.total_invoice_amount,
-		})
-		gl_entry4 = frappe.get_doc({
-			"doctype": "GL Entry",
-			"posting_date": self.posting_date,
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"account": self.debit_to,
-			"debit": self.total_invoice_amount,
-			"credit": 0,
-		})
+		gl_entry3 = frappe.get_doc(
+			{
+				"doctype": "GL Entry",
+				"posting_date": self.posting_date,
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+				"account": "Proceeds from Sales ",
+				"debit": 0,
+				"credit": self.total_invoice_amount,
+			}
+		)
+		gl_entry4 = frappe.get_doc(
+			{
+				"doctype": "GL Entry",
+				"posting_date": self.posting_date,
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+				"account": self.debit_to,
+				"debit": self.total_invoice_amount,
+				"credit": 0,
+			}
+		)
 		gl_entry3.insert()
 		gl_entry4.insert()
 
 	def create_reverse_gl_entries(self):
-		gl_entry1 = frappe.get_doc({
-			"doctype": "GL Entry",
-			"posting_date": today(),
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"account": self.credit_from,
-			"debit": self.total_invoice_amount,
-			"credit": 0,
-			"is_cancelled": 1,
-		})
-		gl_entry2 = frappe.get_doc({
-			"doctype": "GL Entry",
-			"posting_date": today(),
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"account": "Cost of Goods Sold",
-			"debit": 0,
-			"credit": self.total_invoice_amount,
-			"is_cancelled": 1,
-
-		})
+		gl_entry1 = frappe.get_doc(
+			{
+				"doctype": "GL Entry",
+				"posting_date": today(),
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+				"account": self.credit_from,
+				"debit": self.total_invoice_amount,
+				"credit": 0,
+				"is_cancelled": 1,
+			}
+		)
+		gl_entry2 = frappe.get_doc(
+			{
+				"doctype": "GL Entry",
+				"posting_date": today(),
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+				"account": "Cost of Goods Sold",
+				"debit": 0,
+				"credit": self.total_invoice_amount,
+				"is_cancelled": 1,
+			}
+		)
 		gl_entry1.insert()
 		gl_entry2.insert()
 
-		gl_entry3 = frappe.get_doc({
-			"doctype": "GL Entry",
-			"posting_date": today(),
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"account": "Proceeds from Sales ",
-			"debit": self.total_invoice_amount,
-			"credit": 0,
-			"is_cancelled": 1,
-		})
-		gl_entry4 = frappe.get_doc({
-			"doctype": "GL Entry",
-			"posting_date": today(),
-			"voucher_type": self.doctype,
-			"voucher_no": self.name,
-			"account": self.debit_to,
-			"debit": 0,
-			"credit": self.total_invoice_amount,
-			"is_cancelled": 1,
-		})
+		gl_entry3 = frappe.get_doc(
+			{
+				"doctype": "GL Entry",
+				"posting_date": today(),
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+				"account": "Proceeds from Sales ",
+				"debit": self.total_invoice_amount,
+				"credit": 0,
+				"is_cancelled": 1,
+			}
+		)
+		gl_entry4 = frappe.get_doc(
+			{
+				"doctype": "GL Entry",
+				"posting_date": today(),
+				"voucher_type": self.doctype,
+				"voucher_no": self.name,
+				"account": self.debit_to,
+				"debit": 0,
+				"credit": self.total_invoice_amount,
+				"is_cancelled": 1,
+			}
+		)
 		gl_entry3.insert()
 		gl_entry4.insert()
 
 	def cancel_original_gl_entries(self):
-		gl_entries = frappe.db.get_all("GL Entry",filters = {"voucher_no": self.name})
+		gl_entries = frappe.db.get_all("GL Entry", filters={"voucher_no": self.name})
 
 		for g in gl_entries:
 			gl_entry = frappe.get_doc("GL Entry", g.name)
