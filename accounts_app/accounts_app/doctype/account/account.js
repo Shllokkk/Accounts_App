@@ -13,7 +13,7 @@ frappe.ui.form.on("Account", {
             frm.set_value('type', '')
 
         frm.set_query('parent_account', function() {
-            if(type =="")
+            if(type == "")
                 return {
                     filters: {
                         is_group: 1
@@ -33,5 +33,5 @@ frappe.ui.form.on("Account", {
             frm.set_df_property('account_type', 'read_only', '1')
         else
             frm.set_df_property('account_type', 'read_only', '0')
-    }
+    },
 });
